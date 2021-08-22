@@ -1,6 +1,17 @@
 import numpy as np
 
-class QuadraticCost:
+
+class Cost:
+    @staticmethod
+    def delta(z, a, y):
+        pass
+
+    @staticmethod
+    def cost(a, y, n):
+        pass
+
+
+class QuadraticCost(Cost):
     @staticmethod
     def sigmoid_prime(x):
         return np.exp(-x) / np.power(1.0 + np.exp(-x), 2)

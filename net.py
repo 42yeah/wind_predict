@@ -1,4 +1,5 @@
 import random
+import costs
 import numpy as np
 
 
@@ -11,7 +12,7 @@ def sigmoid_prime(x):
 
 
 class Net:
-    def __init__(self, sizes, cost_func):
+    def __init__(self, sizes, cost_func: costs.Cost):
         self.sizes = sizes
         self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(x, 1) for x in sizes[1:]]
@@ -32,7 +33,12 @@ class Net:
             ]
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
-            # TODO: Test
+            total_cost = 0
+            for x, y in test_data:
+                a = self.feedforward(x)
+                total_cost += self.cost_func.cost(a, y, a.shape[0])
+            total_cost /= len(test_data)
+            print(f"Epoch {i} complete. Test cost: {total_cost}.")
 
     def update_mini_batch(self, mini_batch, eta):
         nabla_w = [np.zeros(x.shape) for x in self.weights]
