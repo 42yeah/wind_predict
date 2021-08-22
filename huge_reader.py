@@ -9,6 +9,7 @@ def load_data():
     for index, entry in df.iterrows():
         if entry["power"] == 0 or \
             entry["speed"] <= 0 or \
+            entry["speed"] > 20 or \
             entry["direction"] <= 0 or \
             entry["temp"] <= 0 or \
             entry["humidity"] <= 0 or \
@@ -24,6 +25,7 @@ def load_data():
         output = np.array([[entry["power_normalized"]]])
         data.append((inputs, output))
     random.shuffle(data)
+
     return data[:-7000], data[-7000:]
 
 

@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def sigmoid(x):
@@ -28,7 +29,8 @@ class Net:
         return x
 
     def stochastic_gradient_descent(self, epoch, training_data, mini_batch_size, eta, test_data,
-                                    monitor_evaluation_cost=False):
+                                    monitor_evaluation_cost=False,
+                                    render_evaluation=False):
         for i in range(epoch):
             print(f"Commencing epoch {i}...")
             random.shuffle(training_data)
@@ -40,12 +42,25 @@ class Net:
                 self.update_mini_batch(mini_batch, eta)
 
             print(f"Epoch {i} complete. ", end="")
-            if monitor_evaluation_cost:
+            if monitor_evaluation_cost or render_evaluation:
                 total_cost = 0
+                predicted = []
+                expected = []
+                # test_data = sorted(test_data, key=lambda x: x[1])
                 for x, y in test_data:
                     a = self.feedforward(x)
+                    if len(predicted) < 100:
+                        predicted.append(a[0][0])
+                        expected.append(y[0][0])
                     total_cost += self.cost_func.cost(a, y, 1)
-                print(f"Evaluation data cost: {total_cost}", end="")
+                if monitor_evaluation_cost:
+                    print(f"Evaluation data cost: {total_cost}", end="")
+                if render_evaluation:
+                    fig = plt.figure()
+                    ax = plt.axes()
+                    ax.plot(predicted, color="b")
+                    ax.plot(expected, color="r")
+                    plt.show()
             print()
 
     def update_mini_batch(self, mini_batch, eta):
