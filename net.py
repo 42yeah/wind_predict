@@ -1,5 +1,4 @@
 import random
-import costs
 import numpy as np
 
 
