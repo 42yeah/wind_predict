@@ -29,7 +29,7 @@ class Net:
         return x
 
     def stochastic_gradient_descent(self, epoch, training_data, mini_batch_size, eta, test_data,
-                                    monitor_evaluation_accuracy=False):
+                                    monitor_evaluation_cost=False):
         for i in range(epoch):
             print(f"Commencing epoch {i}...")
             random.shuffle(training_data)
@@ -41,13 +41,12 @@ class Net:
                 self.update_mini_batch(mini_batch, eta)
 
             print(f"Epoch {i} complete. ", end="")
-            if monitor_evaluation_accuracy:
-                num_accurate = 0
+            if monitor_evaluation_cost:
+                total_cost = 0
                 for x, y in test_data:
                     a = self.feedforward(x)
-                    if np.argmax(a) == y:
-                        num_accurate += 1
-                print(f"Evaluation data accuracy: {num_accurate} / {len(test_data)}", end="")
+                    total_cost += self.cost_func.cost(a, y, 1)
+                print(f"Evaluation data cost: {total_cost}", end="")
             print()
 
     def update_mini_batch(self, mini_batch, eta):
