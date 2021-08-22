@@ -11,8 +11,13 @@ def sigmoid_prime(x):
     return np.exp(-x) / np.power(1.0 + np.exp(-x), 2)
 
 
+one_hots = [np.zeros((10, 1)) for _ in range(0, 10)]
+for i in range(0, 10):
+    one_hots[i][i][0] = 1.0
+
+
 class Net:
-    def __init__(self, sizes, cost_func: costs.Cost):
+    def __init__(self, sizes, cost_func):
         self.sizes = sizes
         self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(x, 1) for x in sizes[1:]]
@@ -36,7 +41,7 @@ class Net:
             total_cost = 0
             for x, y in test_data:
                 a = self.feedforward(x)
-                total_cost += self.cost_func.cost(a, y, a.shape[0])
+                total_cost += self.cost_func.cost(a, one_hots[y], a.shape[0])
             total_cost /= len(test_data)
             print(f"Epoch {i} complete. Test cost: {total_cost}.")
 
