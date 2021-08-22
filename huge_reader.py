@@ -1,10 +1,18 @@
 import pandas as pd
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 
 def load_data():
     df = pd.read_csv("huge.csv", sep=";")
+    draw = []
+    for index, entry in df.iterrows():
+        draw.append(entry["power"])
+    fig = plt.figure()
+    ax = plt.axes()
+    ax.plot(draw)
+    plt.show()
     data = []
     for index, entry in df.iterrows():
         if entry["power"] == 0 or \
