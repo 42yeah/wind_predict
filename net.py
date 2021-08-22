@@ -38,12 +38,19 @@ class Net:
             ]
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
-            total_cost = 0
+
+            # Cost calculation
+            training_total_cost = 0
+            test_total_cost = 0
+            for x, y in training_data:
+                a = self.feedforward(x)
+                training_total_cost += self.cost_func.cost(a, y, a.shape[0])
             for x, y in test_data:
                 a = self.feedforward(x)
-                total_cost += self.cost_func.cost(a, one_hots[y], a.shape[0])
-            total_cost /= len(test_data)
-            print(f"Epoch {i} complete. Test cost: {total_cost}.")
+                test_total_cost += self.cost_func.cost(a, one_hots[y], a.shape[0])
+            training_total_cost /= len(training_data)
+            test_total_cost /= len(test_data)
+            print(f"Epoch {i} complete. Training cost: {training_total_cost}. Test cost: {test_total_cost}.")
 
     def update_mini_batch(self, mini_batch, eta):
         nabla_w = [np.zeros(x.shape) for x in self.weights]
