@@ -14,3 +14,12 @@ class QuadraticCost:
     def cost(a, y, n):
         return np.sqrt(np.sum(np.power(a - y, 2))) / (2 * n)
 
+
+class CrossEntropyCost:
+    @staticmethod
+    def delta(z, a, y):
+        return a - y
+
+    @staticmethod
+    def cost(a, y, n):
+        return -np.sum(y * np.log(a) + (1.0 - y) * np.log(1.0 - a)) / n

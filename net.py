@@ -28,7 +28,8 @@ class Net:
             x = sigmoid(np.matmul(w, x) + b)
         return x
 
-    def stochastic_gradient_descent(self, epoch, training_data, mini_batch_size, eta, test_data):
+    def stochastic_gradient_descent(self, epoch, training_data, mini_batch_size, eta, test_data,
+                                    monitor_evaluation_accuracy=False):
         for i in range(epoch):
             print(f"Commencing epoch {i}...")
             random.shuffle(training_data)
@@ -39,18 +40,15 @@ class Net:
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
 
-            # Cost calculation
-            training_total_cost = 0
-            test_total_cost = 0
-            for x, y in training_data:
-                a = self.feedforward(x)
-                training_total_cost += self.cost_func.cost(a, y, a.shape[0])
-            for x, y in test_data:
-                a = self.feedforward(x)
-                test_total_cost += self.cost_func.cost(a, one_hots[y], a.shape[0])
-            training_total_cost /= len(training_data)
-            test_total_cost /= len(test_data)
-            print(f"Epoch {i} complete. Training cost: {training_total_cost}. Test cost: {test_total_cost}.")
+            print(f"Epoch {i} complete. ", end="")
+            if monitor_evaluation_accuracy:
+                num_accurate = 0
+                for x, y in test_data:
+                    a = self.feedforward(x)
+                    if np.argmax(a) == y:
+                        num_accurate += 1
+                print(f"Evaluation data accuracy: {num_accurate} / {len(test_data)}", end="")
+            print()
 
     def update_mini_batch(self, mini_batch, eta):
         nabla_w = [np.zeros(x.shape) for x in self.weights]
