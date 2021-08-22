@@ -19,7 +19,7 @@ for i in range(0, 10):
 class Net:
     def __init__(self, sizes, cost_func):
         self.sizes = sizes
-        self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
+        self.weights = [np.random.randn(y, x) / np.sqrt(x) for x, y in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(x, 1) for x in sizes[1:]]
         self.cost_func = cost_func
 
