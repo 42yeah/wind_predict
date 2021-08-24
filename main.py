@@ -12,5 +12,5 @@ if __name__ == "__main__":
     network = net.Net([5, 100, 1], costs.QuadraticCost)
     network.stochastic_gradient_descent(400, training_data, 3, 0.5, 1.0, test_data,
                                         monitor_evaluation_cost=True,
-                                        render_evaluation=False,
+                                        render_evaluation=True,
                                         monitor_evaluation_rmse=True)

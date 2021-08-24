@@ -7,16 +7,17 @@ def load_data():
     df = pd.read_csv("huge.csv", sep=";")
     data = []
     for index, entry in df.iterrows():
+        if entry["power_normalized"] <= 0:
+            entry["power_normalized"] = 0
         if entry["power"] == 0 or \
             entry["speed"] <= 0 or \
             entry["speed"] > 20 or \
             entry["direction"] <= 0 or \
             entry["temp"] <= 0 or \
             entry["humidity"] <= 0 or \
-            entry["pressure"] <= 0:
+            entry["pressure"] <= 0: # or \
+            # index == 0:
             continue
-        if entry["power_normalized"] <= 0:
-            entry["power_normalized"] *= -1
 
         tod = entry["nope"].split(" ")
         tod = [0, 0] if len(tod) == 1 else [int(x) for x in tod[1].split(":")]
@@ -26,7 +27,9 @@ def load_data():
                            [entry["temp_normalized"]],
                            [entry["humidity_normalized"]],
                            [entry["pressure_normalized"]],
-                           [tod_norm]])
+                           [tod_norm],
+                           # [df.iloc[index - 1]["power_normalized"]]])
+                           ])
         output = np.array([[entry["power_normalized"]]])
         data.append((inputs, output))
     random.shuffle(data)
