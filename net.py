@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import markov
 
 
 def sigmoid(x):
@@ -78,6 +79,48 @@ class Net:
                     ax.plot(rpd, color="b")
                     plt.show()
             print("done.")
+        # Apply markov model?
+        rpd = []
+        for x, y in test_data[:6900]:
+            a = self.feedforward(x)
+            rpd.append(((a - y) / (np.abs(a) + np.abs(y)))[0][0])
+        markov_model = markov.Markov(2)
+        markov_model.train(rpd)
+
+        # The 6900th data
+        a = self.feedforward(test_data[6900][0])
+        z = markov.one_hot_state(((a - test_data[6900][1]) / (np.abs(a) + np.abs(test_data[6900][1])))[0][0])
+        mods = np.array([-0.75, -0.25, 0.25, 0.75])
+        results = [[], [], []]
+        rmse_mod = 0
+        rmse_a = 0
+        for i in range(6900, len(test_data), 2):
+            preds = markov_model.predict(z)
+            # ...predict the next one...
+            for j in range(1, 3):
+                if i + j >= len(test_data):
+                    continue
+                x = test_data[i + j][0]
+                a = self.feedforward(x)[0][0]
+                y = test_data[i + j][1][0][0]
+                results[0].append(y)
+                results[1].append(a)
+                mod = (1 - np.dot(preds[j - 1], mods)) * a
+                results[2].append(mod[0])
+                rmse_a += np.power(np.sum(a - y), 2)
+                rmse_mod += np.power(np.sum(mod - y), 2)
+            z = preds[-1]
+        print(f"RMSEmod: {np.sqrt(rmse / 100)}, RMSEa: {np.sqrt(rmse_a / 100)}")
+        fig = plt.figure()
+        ax = plt.axes()
+        ax.plot(results[0], color="b")
+        ax.plot(results[1], color="g")
+        ax.plot(results[2], color="r")
+        plt.show()
+
+
+        print("Done")
+
 
     def update_mini_batch(self, mini_batch, eta, lmbda, n):
         nabla_w = [np.zeros(x.shape) for x in self.weights]

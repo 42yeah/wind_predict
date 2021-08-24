@@ -10,7 +10,7 @@ if __name__ == "__main__":
     np.random.seed(42)
     training_data, test_data = huge_reader.load_data()
     network = net.Net([5, 100, 1], costs.QuadraticCost)
-    network.stochastic_gradient_descent(400, training_data, 3, 0.5, 1.0, test_data,
+    network.stochastic_gradient_descent(30, training_data, 3, 0.5, 1.0, test_data,
                                         monitor_evaluation_cost=True,
                                         render_evaluation=False,
                                         monitor_evaluation_rmse=True,
