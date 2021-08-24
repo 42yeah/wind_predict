@@ -31,7 +31,8 @@ class Net:
     def stochastic_gradient_descent(self, epoch, training_data, mini_batch_size, eta, lmbda, test_data,
                                     monitor_evaluation_cost=False,
                                     render_evaluation=False,
-                                    monitor_evaluation_rmse=False):
+                                    monitor_evaluation_rmse=False,
+                                    render_rpd=False):
         for i in range(epoch):
             print(f"Commencing epoch {i}...")
             random.shuffle(training_data)
@@ -44,11 +45,13 @@ class Net:
 
             print(f"Epoch {i} complete. ", end="")
             if monitor_evaluation_cost or render_evaluation or \
-                    monitor_evaluation_rmse:
+                    monitor_evaluation_rmse or \
+                    render_rpd:
                 total_cost = 0
                 rmse = 0
                 predicted = []
                 expected = []
+                rpd = []
                 # test_data = sorted(test_data, key=lambda x: x[1])
                 for x, y in test_data:
                     a = self.feedforward(x)
@@ -57,6 +60,7 @@ class Net:
                         expected.append(y[0][0])
                     rmse += np.power(np.sum(a - y), 2)
                     total_cost += self.cost_func.cost(a, y, len(test_data))
+                    rpd.append(((a - y) / (np.abs(a) + np.abs(y)))[0][0])
                 rmse = np.sqrt(rmse / len(test_data))
                 if monitor_evaluation_cost:
                     print(f"Evaluation data cost: {total_cost}", end=", ")
@@ -67,6 +71,11 @@ class Net:
                     ax = plt.axes()
                     ax.plot(predicted, color="b")
                     ax.plot(expected, color="r")
+                    plt.show()
+                if render_rpd:
+                    fig = plt.figure()
+                    ax = plt.axes()
+                    ax.plot(rpd, color="b")
                     plt.show()
             print("done.")
 

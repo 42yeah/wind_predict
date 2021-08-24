@@ -32,9 +32,11 @@ def load_data():
                            ])
         output = np.array([[entry["power_normalized"]]])
         data.append((inputs, output))
-    random.shuffle(data)
+    test_data = data[-7000:]
+    training_data = data[:-7000]
+    random.shuffle(training_data)
 
-    return data[:-7000], data[-7000:]
+    return training_data, test_data
 
 
 if __name__ == "__main__":
