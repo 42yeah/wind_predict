@@ -17,11 +17,16 @@ def load_data():
             continue
         if entry["power_normalized"] <= 0:
             entry["power_normalized"] *= -1
+
+        tod = entry["nope"].split(" ")
+        tod = [0, 0] if len(tod) == 1 else [int(x) for x in tod[1].split(":")]
+        tod_norm = (tod[0] * 60 + tod[1]) / (24 * 60)
+
         inputs = np.array([[entry["speed_normalized"]],
                            [entry["temp_normalized"]],
                            [entry["humidity_normalized"]],
                            [entry["pressure_normalized"]],
-                           [entry["time_normalized"]]])
+                           [tod_norm]])
         output = np.array([[entry["power_normalized"]]])
         data.append((inputs, output))
     random.shuffle(data)
